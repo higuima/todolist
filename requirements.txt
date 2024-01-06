@@ -1,1 +1,1 @@
-pymongo==x.x.x
+pymongo==4.6.1
