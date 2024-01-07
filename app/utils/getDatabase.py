@@ -8,7 +8,8 @@ class DatabaseConnection:
     def __init__(self):
         self.database = 'todolistdb'
         self.cluster = f"mongodb+srv://{st.secrets.mongo.username}:{st.secrets.mongo.password}@cluster0.lpjfcwv.mongodb.net/{self.database}?retryWrites=true&w=majority"
-
+    
+    # @st.cache_resource
     def init_connection(self):
         return MongoClient(self.cluster)
 
@@ -24,10 +25,16 @@ class DatabaseConnection:
         db = client.todolistdb
         db.todos.insert_one(todo)
 
-    def update_todo_status(self, id, new_status):
+    def insert_many_todos(self, todo:list):
         client = self.init_connection()
         db = client.todolistdb
-        db.todos.update_one({"_id": "$id"}, {"$set": {"status": "$new_status"}})
+        db.todos.insert_many(todo)
+
+    def update_todo(self, id, old_value, new_value):
+        client = self.init_connection()
+        db = client.todolistdb
+        db.todos.update_one({"_id": ObjectId(id)}, {"$set": {old_value: new_value}})
+        st.rerun()
 
     def delete_all_data(self):
         client = self.init_connection()
