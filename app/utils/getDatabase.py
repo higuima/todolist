@@ -35,10 +35,20 @@ class DatabaseConnection:
         db = client.todolistdb
         db.todos.update_one({"_id": ObjectId(id)}, {"$set": {old_value: new_value}})
         st.rerun()
-
-    def delete_all_data(self):
+    
+    def count_tasks(self, filter):
         client = self.init_connection()
         db = client.todolistdb
-        db.todos.delete_many({"name": "Helena"})
-        
-
+        count = db.todos.count_documents({"status": filter})
+        if count > 1:
+            return f":grey[{count} tasks]"
+        elif count == 1:
+            return f":grey[{count} task]"
+        else:
+            return ""
+    
+    def delete_task(self, id):
+        client = self.init_connection()
+        db = client.todolistdb
+        db.todos.delete_one({"_id": ObjectId(id)})
+        st.rerun()
