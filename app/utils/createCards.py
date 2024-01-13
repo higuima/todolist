@@ -56,7 +56,7 @@ class Cards():
             connection.get_data(user_id)
         
         tag_id = "_tag_multiselect_" + str(task['_id'])
-        task_tags = task_display.multiselect("Tags", ['Development', 'Frontend'], task['tags'], key=tag_id, placeholder="Add a tag")
+        task_tags = task_display.multiselect("Tags", ['Urgent', 'Important', 'Study'], task['tags'], key=tag_id, placeholder="Add a tag")
         if sorted(task_tags) != sorted(task['tags']):
             connection.update_todo(task['_id'], "tags", task_tags)
         
