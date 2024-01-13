@@ -2,6 +2,7 @@ import streamlit as st
 import datetime
 from datetime import timedelta, date, datetime
 from utils.getDatabase import DatabaseConnection
+from streamlit_tags import st_tags
 
 
 connection = DatabaseConnection()
@@ -17,7 +18,7 @@ class Cards():
     def create_task(self):
         with st.form(key='todo', clear_on_submit=True):
             task = st.text_input("Insert your To-do here:")
-            tags = st.multiselect("Add tags to your task:", ['Development', 'Frontend'])
+            tags = st.multiselect("Add tags to your task:", ['Urgent', 'Important', 'Study'])
             date_range = st.date_input(
                 "Select period of the task",
                 value= (datetime.now(), datetime.now() + timedelta(days=7)),
