@@ -2,7 +2,6 @@ import streamlit as st
 import datetime
 from datetime import timedelta, date, datetime
 from utils.getDatabase import DatabaseConnection
-from streamlit_tags import st_tags
 
 
 connection = DatabaseConnection()
