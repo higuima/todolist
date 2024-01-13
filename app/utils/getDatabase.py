@@ -13,10 +13,10 @@ class DatabaseConnection:
     def init_connection(self):
         return MongoClient(self.cluster)
 
-    def get_data(self):
+    def get_data(self, user_id):
         client = self.init_connection()
         db = client.todolistdb
-        items = db.todos.find()
+        items = db.todos.find({"user_id": ObjectId(user_id)})
         items = list(items)  # make hashable for st.cache_data
         return items
 
@@ -36,10 +36,10 @@ class DatabaseConnection:
         db.todos.update_one({"_id": ObjectId(id)}, {"$set": {old_value: new_value}})
         st.rerun()
     
-    def count_tasks(self, filter):
+    def count_tasks(self, filter, id):
         client = self.init_connection()
         db = client.todolistdb
-        count = db.todos.count_documents({"status": filter})
+        count = db.todos.count_documents({"status": filter, "user_id": ObjectId(id)})
         if count > 1:
             return f":grey[{count} tasks]"
         elif count == 1:

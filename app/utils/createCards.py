@@ -26,7 +26,7 @@ class Cards():
                 format="DD.MM.YYYY",
             )
             todo = {
-                "name": "Helena",
+                "user_id": st.session_state['user_id'],
                 "text": task,
                 "status": "To Do",
                 "tags": tags,
@@ -38,7 +38,7 @@ class Cards():
             if submit_button == True:
                 connection.insert_todo(todo)
 
-    def create_card(self, task:list):
+    def create_card(self, task:list, user_id):
         task_display = st.container(border=True)
         task_display.subheader(task['text'])
         options = ["To Do","Doing", "Done"]
@@ -53,7 +53,7 @@ class Cards():
         new_status = task_display.selectbox("Status", options, key=task['_id'], index=options.index(task['status']))
         if new_status != task['status']:
             connection.update_todo(task['_id'], "status", new_status)
-            connection.get_data()
+            connection.get_data(user_id)
         
         tag_id = "_tag_multiselect_" + str(task['_id'])
         task_tags = task_display.multiselect("Tags", ['Development', 'Frontend'], task['tags'], key=tag_id, placeholder="Add a tag")
@@ -66,14 +66,14 @@ class Cards():
             connection.delete_task(task['_id'])
 
 
-    def create_display_tasks(self, status, tasks, color):
+    def create_display_tasks(self, status, tasks, color, user_id):
         title, count = st.columns(2)
         with title:
             st.title(f":{color}[{status}]")
         with count:
-            st.title(connection.count_tasks(status))
+            st.title(connection.count_tasks(status, user_id))
         list_tasks = self.sort_cards(tasks, status)
         for task in list_tasks:
-            card = self.create_card(task)
+            card = self.create_card(task, user_id)
             if card != None:
                 st.write(card)
