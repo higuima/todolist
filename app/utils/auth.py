@@ -23,7 +23,7 @@ class Auth():
     def login(self, email, password):
         client = database.init_connection()
         db = client.todolistdb
-        user_info = db.users.find_one({'email':email, 'password': password})
+        user_info = db.users.find_one({'email': email.lower(), 'password': password})
         if user_info:
             st.session_state['user'] = True
             st.session_state['user_id'] = user_info['_id']
@@ -68,7 +68,7 @@ class Auth():
                     if test_email == False:
                         user = {
                             "name": name,
-                            "email": email,
+                            "email": email.lower(),
                             "company": company,
                             "password": password,
                         }
