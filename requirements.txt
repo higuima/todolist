@@ -1,2 +1,2 @@
 pymongo==4.6.1
-argon2==23.1.0
+argon2-cffi==23.1.0
