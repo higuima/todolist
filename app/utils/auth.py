@@ -1,6 +1,7 @@
 import streamlit as st
 from utils.getDatabase import DatabaseConnection
 from utils.getUserInfo import UsersConnection
+import argon2
 
 database = DatabaseConnection()
 users = UsersConnection()
@@ -20,19 +21,40 @@ class Auth():
                 st.session_state.form = 'signup_form'
                 st.rerun()
 
+    def hashed_password(self,password):
+        argon2Hasher = argon2.PasswordHasher(
+            time_cost=16, memory_cost=2**15, parallelism=2, hash_len=32, salt_len=16)
+        hash = argon2Hasher.hash(password)
+        return hash
+
+    def verify_password(self,password, hashed):
+        argon2Hasher = argon2.PasswordHasher(
+            time_cost=16, memory_cost=2**15, parallelism=2, hash_len=32, salt_len=16)
+        try:
+            verified = argon2Hasher.verify(hashed, password)
+            st.write(verified)
+            return verified
+        except:
+            return False
+
     def login(self, email, password):
         client = database.init_connection()
         db = client.todolistdb
-        user_info = db.users.find_one({'email': email.lower(), 'password': password})
+        user_info = db.users.find_one({'email': email.lower()})
         if user_info:
-            st.session_state['user'] = True
-            st.session_state['user_id'] = user_info['_id']
-            st.session_state['username'] = user_info['name']
-            del user_info['password']
-            st.rerun()
+            verify = self.verify_password(password, user_info['password'])
+            if verify:
+                st.session_state['user'] = True
+                st.session_state['user_id'] = user_info['_id']
+                st.session_state['username'] = user_info['name']
+                del user_info['password']
+                st.rerun()
+            elif verify == False:
+                st.session_state['user'] = False
+                st.error("😕 Incorrect password")
         else:
             st.session_state['user'] = False
-            st.error("😕 User not known or password incorrect")
+            st.error("😕 User not known")
         return st.session_state['user']
 
     def logout(self):
@@ -66,11 +88,12 @@ class Auth():
                 else:
                     test_email = users.user_email_exists(email)
                     if test_email == False:
+                        hashed_password = self.hashed_password(password)
                         user = {
                             "name": name,
                             "email": email.lower(),
                             "company": company,
-                            "password": password,
+                            "password": hashed_password,
                         }
                         user_id = users.insert_user(user)
                         st.success('You have successfully registered!')
