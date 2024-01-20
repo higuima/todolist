@@ -30,37 +30,52 @@ To simplify, the smaller projects were basically:
 - clients can only see their tasks
 - create a secure authentication process
 
-### **Now, what exaclty is a kanban dashboard?**
-
-Is an organization method of visualizing all your tasks based on the state of completion they have. In this case, I created a status for each task and gave them a flow of completion from “to do” to “doing” and when the task is finalized, “done”.
-""")
-st.image('./app/assets/kanban.png')
-
-st.markdown("""
-> If you want to learn more about kanban, [here’s a cool guide](https://www.atlassian.com/br/agile/kanban)
-> 
-
-So, to create the ilusion of flow I built three streamlit columns and displayed the status of the task. Each column displays cards with information about the tasks in a way that you can interact with:
 """)
 
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("""
+    ### **Now, what exaclty is a kanban dashboard?**
+
+    Is an organization method of visualizing all your tasks based on the state of completion they have. In this case, I created a status for each task and gave them a flow of completion from “to do” to “doing” and when the task is finalized, “done”.
+    > If you want to learn more about kanban, [here’s a cool guide](https://www.atlassian.com/br/agile/kanban)
+    """)
+    
+
+with col2:
+    st.image('./app/assets/kanban.png', width=500)
+
+st.markdown("""So, to create the ilusion of flow I built three streamlit columns and displayed the status of the task. Each column displays cards with information about the tasks in a way that you can interact with:
+""")
 st.image('./app/assets/kanban_dash.png')
+st.markdown("This way, each task gets a card and you can move them between columns by changing the status of the task.")
+
+col3, col4 = st.columns(2)
+
+with col3:
+    st.markdown("### What are the databases I created?")
+    st.image('./app/assets/databases.png')
+    
+
+with col4:
+    st.markdown("""
+    ###
+    ###
+
+    To store the information necessary for each task, I created a non-relational database using JSON structure. This way I can easily upload a new task to mongodb and retrive information in a organized way.
+
+    > Also, I really wanted to experiment with a no-SQL structure type of database, so yeah, I could’ve used tables, but I didn’t want to.
+
+    For the Users database, I needed information for the login/signup system. It was also necessary for the experience that each user could only access its own tasks. To acomplish this, I used the user_id while filtering the tasks that should render on the page. This user_id is created automatically by Mongodb and it was refreshing being allowed to just integrate the collections with an easy query.
+
+    """)
+
+
+
 
 
 st.markdown("""
-This way, each task gets a card and you can move them between columns by changing the status of the task.
-
-### What are the databases I created?
-
-To store the information necessary for each task, I created a non-relational database using JSON structure. This way I can easily upload a new task to mongodb and retrive information in a organized way.
-
-> Also, I really wanted to experiment with a no-SQL structure type of database, so yeah, I could’ve used tables, but I didn’t want to.
-
-""")
-
-st.image('./app/assets/databases.png')
-
-st.markdown("""
-For the Users database, I needed information for the login/signup system. It was also necessary for the experience that each user could only access its own tasks. To acomplish this, I used the user_id while filtering the tasks that should render on the page. This user_id is created automatically by Mongodb and it was refreshing being allowed to just integrate the collections with an easy query.
 
 ### Finishing touches
 
