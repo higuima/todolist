@@ -34,7 +34,7 @@ class Cards():
                 "start_date": datetime.strftime(date_range[0],"%Y-%m-%d"),
                 "end_date": datetime.strftime( date_range[1],"%Y-%m-%d")
                 }
-            submit_button = st.form_submit_button("Submit")
+            submit_button = st.form_submit_button("Create")
             if submit_button == True:
                 connection.insert_todo(todo)
 
